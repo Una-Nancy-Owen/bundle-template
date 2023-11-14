@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true, // コンパイル時に型定義ファイルの型チェックを行わない
+    "baseUrl": "./",
+    "paths": { "*": ["../../@types/*"], "@ui/*": ["src/ui/*"] },
+
+    /* Bundler mode */
+    "moduleResolution": "bundler", // モジュールのインポートの解決方法
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*", "../browser.d.ts"],
+  "extends": ["../../tsconfig"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

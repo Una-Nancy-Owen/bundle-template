@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "sourceMap": true, // デバッグ用のmapファイルを出力
+    "strict": true, // コードをより厳密にチェックする
+    "esModuleInterop": true, // モジュールのインポートの互換性
+    "skipLibCheck": true, // コンパイル時に型定義ファイルの型チェックを行わない
+    "forceConsistentCasingInFileNames": true // ファイルの文字列の大文字小文字を区別する
+  }
+}

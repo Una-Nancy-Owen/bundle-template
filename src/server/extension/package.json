@@ -1,0 +1,9 @@
+{
+  "name": "extention",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "watch": "tsc -w -p .",
+    "build": "tsc -p ."
+  }
+}
