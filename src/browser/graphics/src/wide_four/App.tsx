@@ -1,7 +1,8 @@
+import { RunnerContainerProps } from '@props/props'
 import { StHorizontalGroup, StVerticalGroup, StWideFrame } from '@ui/style'
 import { getTimerStr } from '@util/util'
 import { TimerGroup, RunnerGroup, Speaker } from 'bundle-template'
-import { RefObject, createRef, useCallback, useEffect, useRef, useState } from 'react'
+import { RefObject, createRef, forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 import { HiSpeakerWave } from 'react-icons/hi2'
 import { styled } from 'styled-components'
 
@@ -65,18 +66,20 @@ function App() {
         </StFrameContainer>
         <StCenterContainer>
           <StRunnerInfoLeftAlignGroup>
-            <StNameContainer>
-              <StSpeaker>{speaker.enabled[0] ? <HiSpeakerWave /> : null}</StSpeaker>
-              <p>{runnerGroup.runners[0].name}</p>
-            </StNameContainer>
-            <StTimerParagraph ref={timerRef.current[0]} />
+            <RunnerContainer
+              ref={timerRef.current[0]}
+              isSpeaker={speaker?.enabled[0]}
+              name={runnerGroup.runners[0].name}
+              isVisible={true}
+            />
           </StRunnerInfoLeftAlignGroup>
           <StRunnerInfoRightAlignGroup>
-            <StNameContainer>
-              <p>{1 < runnerGroup.runners.length ? runnerGroup.runners[1].name : ''}</p>
-              <StSpeaker>{speaker.enabled[1] ? <HiSpeakerWave /> : null}</StSpeaker>
-            </StNameContainer>
-            <StTimerParagraph ref={timerRef.current[1]} />
+            <RunnerContainer
+              ref={timerRef.current[1]}
+              isSpeaker={speaker?.enabled[1]}
+              name={1 < runnerGroup.runners.length ? runnerGroup.runners[1].name : ''}
+              isVisible={1 < runnerGroup.runners.length}
+            />
           </StRunnerInfoRightAlignGroup>
           <StTitleInfoContainer>
             <StTitle>{title}</StTitle>
@@ -86,8 +89,7 @@ function App() {
                 <p>{runnerGroup.platform}</p>
               </StTitleInfoGroup>
               <StRightAlignVerticalGroup>
-                <p>予定タイム</p>
-                <p>{runnerGroup.estimatedTime}</p>
+                <p>予定タイム {runnerGroup.estimatedTime}</p>
               </StRightAlignVerticalGroup>
             </StTitleInfoVerticalGroup>
           </StTitleInfoContainer>
@@ -96,18 +98,20 @@ function App() {
             {commentator}
           </StCommentatorContainer>
           <StRunnerInfoLeftAlignGroup>
-            <StNameContainer>
-              <StSpeaker>{speaker.enabled[2] ? <HiSpeakerWave /> : null}</StSpeaker>
-              <p>{2 < runnerGroup.runners.length ? runnerGroup.runners[2].name : ''}</p>
-            </StNameContainer>
-            <StTimerParagraph ref={timerRef.current[2]} />
+            <RunnerContainer
+              ref={timerRef.current[2]}
+              isSpeaker={speaker?.enabled[2]}
+              name={2 < runnerGroup.runners.length ? runnerGroup.runners[2].name : ''}
+              isVisible={2 < runnerGroup.runners.length}
+            />
           </StRunnerInfoLeftAlignGroup>
           <StRunnerInfoRightAlignGroup>
-            <StNameContainer>
-              <p>{3 < runnerGroup.runners.length ? runnerGroup.runners[3].name : ''}</p>
-              <StSpeaker>{speaker.enabled[3] ? <HiSpeakerWave /> : null}</StSpeaker>
-            </StNameContainer>
-            <StTimerParagraph ref={timerRef.current[3]} />
+            <RunnerContainer
+              ref={timerRef.current[3]}
+              isSpeaker={speaker?.enabled[3]}
+              name={3 < runnerGroup.runners.length ? runnerGroup.runners[3].name : ''}
+              isVisible={3 < runnerGroup.runners.length}
+            />
           </StRunnerInfoRightAlignGroup>
         </StCenterContainer>
         <StFrameContainer>
@@ -122,6 +126,22 @@ function App() {
 }
 
 export default App
+
+const RunnerContainer = forwardRef<HTMLParagraphElement, RunnerContainerProps>(
+  ({ isSpeaker, name, isVisible }, timerParagraphRef) => {
+    return (
+      <>
+        <StNameContainer $isVisible={isVisible}>
+          <StSpeaker>{isSpeaker ? <HiSpeakerWave /> : null}</StSpeaker>
+          <p>{name}</p>
+        </StNameContainer>
+        <StTimer $isVisible={isVisible}>
+          <p ref={timerParagraphRef} />
+        </StTimer>
+      </>
+    )
+  }
+)
 
 // #region styles
 
@@ -160,7 +180,7 @@ const StCenterContainer = styled(StVerticalGroup)`
 const StRunnerInfoVerticalGroup = styled(StVerticalGroup)`
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 10px 0px;
 `
 
 const StRunnerInfoLeftAlignGroup = styled(StRunnerInfoVerticalGroup)`
@@ -181,6 +201,7 @@ const StRunnerInfoRightAlignGroup = styled(StRunnerInfoVerticalGroup)`
 `
 
 const StTitleInfoContainer = styled(StVerticalGroup)`
+  height: 302px;
   justify-content: center;
   flex-grow: 1;
   background-color: rgb(32 47 91 / 13%);
@@ -190,7 +211,6 @@ const StTitleInfoContainer = styled(StVerticalGroup)`
 
 const StSpeaker = styled(StHorizontalGroup)`
   align-items: center;
-  margin-bottom: -6px;
   width: 50px;
   & > svg {
     width: 40px;
@@ -204,12 +224,13 @@ const StTitleInfoVerticalGroup = styled(StVerticalGroup)`
 
 const StCommentatorContainer = styled(StHorizontalGroup)`
   align-items: center;
-  padding: 40px 0;
+  height: 86px;
+  margin: 20px 0px;
   white-space: nowrap;
   text-overflow: ellipsis;
   flex-wrap: wrap;
   & > p {
-    font-size: 2rem;
+    font-size: 1.7rem;
     font-weight: 900;
   }
 
@@ -223,44 +244,48 @@ const StCommentatorContainer = styled(StHorizontalGroup)`
 `
 
 const StTitle = styled.div`
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 900;
   text-align: center;
 `
 
 const StTitleInfoGroup = styled(StVerticalGroup)`
   & > p {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 700;
     text-align: center;
   }
 `
 
-const StNameContainer = styled(StHorizontalGroup)`
+const StNameContainer = styled(StHorizontalGroup)<{ $isVisible: boolean }>`
   height: 46px;
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: 900;
   text-align: left;
-
+  opacity: ${(isVisible) => (isVisible.$isVisible ? '1' : '0')};
   & > p {
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 `
 
-const StTimerParagraph = styled.p`
+const StTimer = styled.div<{ $isVisible: boolean }>`
   width: 270px;
-  background-color: rgba(119, 124, 134, 0.69);
-  font-size: 2rem;
-  font-weight: 900;
-  text-align: center;
-  font-family: 'Noto Sans Mono', monospace;
+  height: 37px;
+  opacity: ${(isVisible) => (isVisible.$isVisible ? '1' : '0')};
+  background-color: rgba(119, 124, 134, 0.692);
+  & > p {
+    font-size: 1.7rem;
+    font-weight: 900;
+    text-align: center;
+    font-family: 'Noto Sans Mono', monospace;
+  }
 `
 
 const StRightAlignVerticalGroup = styled(StVerticalGroup)`
   & > p {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 700;
   }
 

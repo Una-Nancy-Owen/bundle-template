@@ -6,7 +6,12 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": "./",
-    "paths": { "*": ["../../@types/*"], "@ui/*": ["src/ui/*"], "@util/*": ["src/util/*"] },
+    "paths": {
+      "*": ["../../@types/*"],
+      "@props/*": ["src/props/*"],
+      "@ui/*": ["src/ui/*"],
+      "@util/*": ["src/util/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
